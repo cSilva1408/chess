@@ -49,6 +49,8 @@ public class Piece {
     // TO BE IMPLEMENTED!
     //return a list of every square that is "controlled" by this piece. A square is controlled
     //if the piece capture into it legally.
+    
+    //Controlled Squares checks every sqaure around the piece selected to check if its possible to make a move 
     public ArrayList<Square> getControlledSquares(Square[][] board, Square start) {
       ArrayList<Square> controlled = new ArrayList<Square>(); 
       int r = start.getRow();
@@ -75,6 +77,12 @@ public class Piece {
     //returns an arraylist of squares which are legal to move to
     //please note that your piece must have some sort of logic. Just being able to move to every square on the board is not
     //going to score any points.
+    
+    //The Specialist is a piece that acts like an advanced pawn
+    //The Specialist is allowed to move one unit forward, backwards, left or right
+    //The Spcialist is allowed to attack one unit to any of its four corners
+    
+    //Legal Moves uses checkSquare and Occupying piece to show the moves that are legal for the player to make 
     public ArrayList<Square> getLegalMoves(Board b, Square start){
       Square[][] board = b.getSquareArray(); 
     	ArrayList<Square> legal = new ArrayList<Square>();

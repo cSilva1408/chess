@@ -186,14 +186,18 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     //use the pieces "legal move" function to determine if this move is legal, then complete it by
     //moving the new piece to it's new board location. 
     @Override
+    
+    //Mouse Released places the piece where the user desired it to go only if it follows Legal moves
     public void mouseReleased(MouseEvent e) {
         Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
         
         //using currPiece
-        ArrayList<Square> legal = currPiece.getLegalMoves(this, fromMoveSquare);
-        if (legal.contains(endSquare)) {
-            endSquare.put(fromMoveSquare.removePiece());
-            whiteTurn = !whiteTurn;
+        if(currPiece != null) {
+            ArrayList<Square> legal = currPiece.getLegalMoves(this, fromMoveSquare);
+            if (legal.contains(endSquare)) {
+                endSquare.put(fromMoveSquare.removePiece());
+                whiteTurn = !whiteTurn;
+            }
         }
 
         for(Square [] row: board) {
@@ -207,12 +211,15 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         repaint();
     }
 
+    //Mouse Dragged shows the user the moves the piece is allowed to make according to legalMoves
     @Override
     public void mouseDragged(MouseEvent e) {
         currX = e.getX() - 24;
         currY = e.getY() - 24;
-        for(Square s: currPiece.getLegalMoves(this, fromMoveSquare)) {
-            s.setBorder(BorderFactory.createLineBorder(Color.MAGENTA));
+        if(currPiece != null) {
+            for(Square s: currPiece.getLegalMoves(this, fromMoveSquare)) {
+                s.setBorder(BorderFactory.createLineBorder(Color.MAGENTA));
+            }
         }
         repaint();
     }
