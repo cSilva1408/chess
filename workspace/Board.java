@@ -88,39 +88,39 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	//it's up to you how you wish to arrange your pieces.
     private void initializePieces() {
     	
-    	board[0][0].put(new Piece(true, RESOURCES_WROOK_PNG));
-        board[0][1].put(new Piece(true, RESOURCES_WKNIGHT_PNG));
-        board[0][2].put(new Piece(true, RESOURCES_WBISHOP_PNG));
-        board[0][3].put(new Piece(true, RESOURCES_WKING_PNG));
-        board[0][4].put(new Piece(true, RESOURCES_WQUEEN_PNG));
-        board[0][5].put(new Piece(true, RESOURCES_WBISHOP_PNG));
-        board[0][6].put(new Piece(true, RESOURCES_WKNIGHT_PNG));
-        board[0][7].put(new Piece(true, RESOURCES_WROOK_PNG));
-        board[1][0].put(new Piece(true, RESOURCES_WSPECIALIST_PNG));
-        board[1][1].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][2].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][3].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][4].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][5].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][6].put(new Piece(true, RESOURCES_WPAWN_PNG));
-        board[1][7].put(new Piece(true, RESOURCES_WSPECIALIST_PNG));
+    	board[0][0].put(new Rook(true, RESOURCES_WROOK_PNG));
+        board[0][1].put(new Specialist(true, RESOURCES_WKNIGHT_PNG));
+        board[0][2].put(new Specialist(true, RESOURCES_WBISHOP_PNG));
+        board[0][3].put(new King(true, RESOURCES_WKING_PNG));
+        board[0][4].put(new Specialist(true, RESOURCES_WQUEEN_PNG));
+        board[0][5].put(new Specialist(true, RESOURCES_WBISHOP_PNG));
+        board[0][6].put(new Specialist(true, RESOURCES_WKNIGHT_PNG));
+        board[0][7].put(new Rook(true, RESOURCES_WROOK_PNG));
+        board[1][0].put(new Specialist(true, RESOURCES_WSPECIALIST_PNG));
+        board[1][1].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][2].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][3].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][4].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][5].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][6].put(new Pawn(true, RESOURCES_WPAWN_PNG));
+        board[1][7].put(new Specialist(true, RESOURCES_WSPECIALIST_PNG));
 
-        board[7][0].put(new Piece(false, RESOURCES_BROOK_PNG));
-        board[7][1].put(new Piece(false, RESOURCES_BKNIGHT_PNG));
-        board[7][2].put(new Piece(false, RESOURCES_BBISHOP_PNG));
-        board[7][3].put(new Piece(false, RESOURCES_BKING_PNG));
-        board[7][4].put(new Piece(false, RESOURCES_BQUEEN_PNG));
-        board[7][5].put(new Piece(false, RESOURCES_BBISHOP_PNG));
-        board[7][6].put(new Piece(false, RESOURCES_BKNIGHT_PNG));
-        board[7][7].put(new Piece(false, RESOURCES_BROOK_PNG));
-        board[6][0].put(new Piece(false, RESOURCES_BSPECIALIST_PNG));
-        board[6][1].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][2].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][3].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][4].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][5].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][6].put(new Piece(false, RESOURCES_BPAWN_PNG));
-        board[6][7].put(new Piece(false, RESOURCES_BSPECIALIST_PNG));
+        board[7][0].put(new Rook(false, RESOURCES_BROOK_PNG));
+        board[7][1].put(new Specialist(false, RESOURCES_BKNIGHT_PNG));
+        board[7][2].put(new Specialist(false, RESOURCES_BBISHOP_PNG));
+        board[7][3].put(new King(false, RESOURCES_BKING_PNG));
+        board[7][4].put(new Specialist(false, RESOURCES_BQUEEN_PNG));
+        board[7][5].put(new Specialist(false, RESOURCES_BBISHOP_PNG));
+        board[7][6].put(new Specialist(false, RESOURCES_BKNIGHT_PNG));
+        board[7][7].put(new Rook(false, RESOURCES_BROOK_PNG));
+        board[6][0].put(new Specialist(false, RESOURCES_BSPECIALIST_PNG));
+        board[6][1].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][2].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][3].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][4].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][5].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][6].put(new Pawn(false, RESOURCES_BPAWN_PNG));
+        board[6][7].put(new Specialist(false, RESOURCES_BSPECIALIST_PNG));
     }
 
     public Square[][] getSquareArray() {
@@ -194,9 +194,19 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         //using currPiece
         if(currPiece != null) {
             ArrayList<Square> legal = currPiece.getLegalMoves(this, fromMoveSquare);
+
             if (legal.contains(endSquare)) {
-                endSquare.put(fromMoveSquare.removePiece());
-                whiteTurn = !whiteTurn;
+                Piece fromSPiece = fromMoveSquare.removePiece();
+                Piece endPiece = endSquare.getOccupyingPiece();
+                
+                endSquare.put(fromSPiece);
+
+                if (isInCheck(whiteTurn)) {
+                    endSquare.put(endPiece);
+                    fromMoveSquare.put(fromSPiece);
+                } else {
+                    whiteTurn = !whiteTurn;
+                }
             }
         }
 
@@ -240,4 +250,25 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     public void mouseExited(MouseEvent e) {
     }
 
+    //precondition - the board is initialized and contains a king of either color. The boolean kingColor corresponds to the color of the king we wish to know the status of.
+          //postcondition - returns true of the king is in check and false otherwise.
+	public boolean isInCheck(boolean kingColor) {
+        ArrayList<Square> controlled = new ArrayList<Square>();
+        Square kingSquare = null;
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Square s = board[r][c];
+                if (s.isOccupied()) {
+                    if (s.getOccupyingPiece().getColor() == kingColor) {
+                        if (s.getOccupyingPiece() instanceof King) {
+                            kingSquare = s;
+                        }
+                    } else {
+                        controlled.addAll(s.getOccupyingPiece().getControlledSquares(board, s));
+                    }
+                }
+            }
+        }
+        return controlled.contains(kingSquare);
+    }    
 }
